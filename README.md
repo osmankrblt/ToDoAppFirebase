@@ -1,10 +1,12 @@
-# to_do_app
+#  To Do App
 
 A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Firebase Auth baglantisi yapildi.Firebase Auth ile kayit ve giris sayfalari yapildi.Not listeleme sayfasi yapildi.
+
+Eksikler: Not ekleme ve notlarin firebase baglantisi
 
 A few resources to get you started if this is your first Flutter project:
 
