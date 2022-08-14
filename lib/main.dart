@@ -5,9 +5,11 @@ import 'package:to_do_app/constants/constants.dart';
 import 'package:to_do_app/firebase_options.dart';
 import 'package:to_do_app/listNots.dart';
 import 'package:to_do_app/loginScreen.dart';
+import 'package:to_do_app/notAdd.dart';
 import 'package:to_do_app/registerScreen.dart';
 
 import 'mainScreen.dart';
+import 'notEdit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +28,8 @@ class MyApp extends StatelessWidget {
         '/registerScreen': (context) => RegisterScreenPage(),
         '/loginScreen': (context) => LoginScreenPage(),
         '/listNots': (context) => ListNots(),
+        '/addNots': (context) => NotAddPage(),
+        '/editNots': (context) => NotEditPage(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

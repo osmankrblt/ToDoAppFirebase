@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/Helper/firebaseHelper.dart';
 import 'package:to_do_app/constants/constants.dart';
 import 'package:to_do_app/createListNots.dart';
+import 'package:to_do_app/streamBuilder.dart';
 
-import 'Helper/notsHelper.dart';
 import 'MyWidgets/drawer.dart';
 
 class ListNots extends StatefulWidget {
@@ -26,7 +27,9 @@ class _ListNotsState extends State<ListNots> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: sabitler.mainColor.withOpacity(0.9),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, "/addNots");
+        },
         child: Icon(
           Icons.add,
           color: Colors.white,
@@ -46,10 +49,15 @@ class _ListNotsState extends State<ListNots> {
       body: Column(
         children: [
           Expanded(
-            child: NotList(onDissmiss: (index) {
-              NotHelper().notList.removeAt(index);
-              debugPrint("ELEMAN ÇIKARILDI $index");
-            }),
+            child: StreamList(
+              onDissmiss: (index) {
+                FirebaseFirestore.instance
+                    .collection(
+                        "todos/${FirebaseAuth.instance.currentUser!.uid}/nots")
+                    .doc((index).toString())
+                    .delete();
+              },
+            ),
           ),
         ],
       ),

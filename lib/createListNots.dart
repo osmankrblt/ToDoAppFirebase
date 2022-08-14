@@ -1,42 +1,52 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:to_do_app/constants/constants.dart';
 import 'package:to_do_app/models/list.dart';
 
-import 'Helper/notsHelper.dart';
 import 'models/nots.dart';
 
 class NotList extends StatelessWidget {
   late Function onDissmiss;
-  NotList({Key? key, required this.onDissmiss}) : super(key: key);
+  late var snapshot;
+  NotList({Key? key, required this.onDissmiss, required this.snapshot});
 
   @override
   Widget build(BuildContext context) {
-    List<Nots> notList = NotHelper().notList;
-    return notList.length > 0
-        ? ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              return Dismissible(
-                key: UniqueKey(),
-                onDismissed: (a) {
-                  onDissmiss(index);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListObject(
-                    title: notList[index].title,
-                    content: notList[index].content,
-                    tarih: notList[index].tarih,
-                  ),
-                ),
-              );
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) {
+        Map<String, dynamic> data =
+            snapshot.data.docs[index].data() as Map<String, dynamic>;
+
+        return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              "/editNots",
+              arguments: {"notId": data["notId"]},
+            );
+          },
+          child: Dismissible(
+            direction: DismissDirection.startToEnd,
+            key: UniqueKey(),
+            onDismissed: (a) {
+              onDissmiss(data["notId"]);
             },
-            itemCount: notList.length,
-          )
-        : Container(
-            child: Center(
-              child: Text("Ders ekleyin"),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListObject(
+                not: Nots(
+                  title: data["title"],
+                  content: data["content"],
+                  tarih: Timestamp.now(),
+                ),
+              ),
             ),
-          );
+          ),
+        );
+      },
+      itemCount: snapshot.data.docs.length,
+    );
   }
 }

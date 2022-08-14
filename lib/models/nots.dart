@@ -1,18 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Nots {
   late String title, content;
-  late String tarih;
+  late Timestamp tarih;
   static late int id = 0;
   Nots({
     required this.title,
     required this.content,
-  }) {
-    id += 1;
-    tarih = DateTime.now().toString();
+    required this.tarih,
+  });
+
+  int getterId() {
+    return id;
   }
-  bool NotUpdate(title, content) {
-    this.title = title;
-    this.content = content;
-    this.tarih = DateTime.now.toString();
-    return false;
+
+  void addId() {
+    id += 1;
+  }
+
+  void minusId() {
+    id -= 1;
   }
 }

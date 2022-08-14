@@ -6,21 +6,33 @@ import 'package:to_do_app/constants/constants.dart';
 import 'Helper/firebaseHelper.dart';
 import 'models/nots.dart';
 
-class NotAddPage extends StatefulWidget {
-  NotAddPage({Key? key}) : super(key: key);
+class NotEditPage extends StatefulWidget {
+  NotEditPage({Key? key}) : super(key: key);
 
   @override
-  State<NotAddPage> createState() => _NotAddPageState();
+  State<NotEditPage> createState() => _NotEditPageState();
 }
 
 var _formKey = GlobalKey<FormState>();
+late int notId;
+late Nots? not = null;
+@override
+Future initState() async {
+  debugPrint("Not Id: $notId");
+  not = await DatabaseHelper()
+      .getNot(FirebaseAuth.instance.currentUser!.uid, notId);
+}
 
-class _NotAddPageState extends State<NotAddPage> {
+class _NotEditPageState extends State<NotEditPage> {
   @override
   late String? title, content;
   Widget build(BuildContext context) {
+    notId = ((ModalRoute.of(context)?.settings.arguments)
+        as Map<String, dynamic>)["notId"];
+    debugPrint("Not Id: $notId");
+
     return Scaffold(
-      appBar: sabitler.baslik("Not Giriniz"),
+      appBar: sabitler.baslik("Not düzeltiniz"),
       body: Form(
         key: _formKey,
         onChanged: () {
@@ -30,6 +42,7 @@ class _NotAddPageState extends State<NotAddPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
+              initialValue: not!.title,
               onSaved: (value) {
                 title = value!;
               },
@@ -41,6 +54,7 @@ class _NotAddPageState extends State<NotAddPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
+              initialValue: not!.content,
               onSaved: (value) {
                 content = value!;
               },
@@ -66,15 +80,14 @@ class _NotAddPageState extends State<NotAddPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
-                      child: Text("Ekle"),
+                      child: Text("Güncelle"),
                       onPressed: () {
-                        DatabaseHelper().addNot(
-                          FirebaseAuth.instance.currentUser!.uid,
-                          Nots(
-                              title: title!,
-                              content: content!,
-                              tarih: Timestamp.now()),
-                        );
+                        DatabaseHelper().updateNot(
+                            FirebaseAuth.instance.currentUser!.uid,
+                            Nots(
+                                title: title!,
+                                content: content!,
+                                tarih: Timestamp.now()));
                         Navigator.pop(context);
                       },
                     ),
